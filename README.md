@@ -53,17 +53,25 @@ pip install -r requirements.txt
 export NGC_API_KEY="{your api key}"
 export NVIDIA_API_KEY="{your api key}"
 ```
-5. Modify Docker configuration:
+5. Pull and run nvidia/nv-embedqa-e5-v5 using Docker (this will download the full model and run it in your local environment):
 ```
-nano ~/.docker/config.json
+docker login nvcr.io
+    Username: $oauthtoken
+    Password: <API_KEY>
 ```
-5a. Remove the line:
+6. Pull and run the NVIDIA NIM with the command below. This will download the optimized model for your infrastructure.
 ```
-"credsStore": "osxkeychain"
-```
-6. Build the application
-```
-docker compose up -d --build
+export NGC_API_KEY=<API_KEY>
+export LOCAL_NIM_CACHE=~/.cache/nim
+mkdir -p "$LOCAL_NIM_CACHE"
+docker run -it --rm \
+    --gpus all \
+    --shm-size=16GB \
+    -e NGC_API_KEY \
+    -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
+    -u $(id -u) \
+    -p 8000:8000 \
+    nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest
 
 ```
 7. Verify running containers
