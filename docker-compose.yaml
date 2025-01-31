@@ -1,1 +1,21 @@
+version: "3.9"
 
+services:
+  nv-embedqa:
+    image: nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest
+    container_name: nv_embedqa_container
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - NGC_API_KEY=${NGC_API_KEY}  # Ensure your API key is in an .env file
+    ports:
+      - "8000:8000"  # Expose the container service on port 8000
+    volumes:
+      - "$LOCAL_NIM_CACHE:/opt/nim/.cache"  # Cache for efficient operation
+    command: ["bash", "-c", "sleep infinity"]  # Keep the container running
