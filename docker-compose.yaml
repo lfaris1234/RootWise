@@ -13,9 +13,11 @@ services:
               count: all
               capabilities: [gpu]
     environment:
-      - NGC_API_KEY=${NGC_API_KEY}  # Ensure your API key is in an .env file
+      - NGC_API_KEY=${NGC_API_KEY}  # Ensure your .env file contains NGC_API_KEY
     ports:
       - "8000:8000"  # Expose the container service on port 8000
     volumes:
-      - "$LOCAL_NIM_CACHE:/opt/nim/.cache"  # Cache for efficient operation
+      - "${LOCAL_NIM_CACHE}:/opt/nim/.cache"  # Ensure LOCAL_NIM_CACHE is set
+    shm_size: "16gb"  # Match the shared memory size from the standalone command
+    user: "${UID:-1000}"  # Ensure the correct user ID is used
     command: ["bash", "-c", "sleep infinity"]  # Keep the container running
