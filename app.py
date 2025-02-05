@@ -40,7 +40,7 @@ def initialize_rag(file_path):
             return "Error: No .txt files found in system_data."
 
         # Step 4: Attempt to load the index from the storage context
-        vector_store = MilvusVectorStore(uri="http://localhost:19530", dim=1536, overwrite=True)
+        vector_store = MilvusVectorStore(uri="http://your_gpu_ip:19530", dim=1536, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         query_engine = index.as_query_engine()
@@ -52,7 +52,7 @@ def initialize_rag(file_path):
     
     except Exception as e:
         # General Exception block with debug context
-        # print(f"\n\n {e} \n\n")
+        print(f"\n\n {e} \n\n")
         return f"Failed to initialize query engine. Exception: {str(e)}"
 
 # Function to handle file inputs for RAG
@@ -99,7 +99,7 @@ def load_documents(file_objs):
         if not documents:
             return f"No documents found in the selected files."
 
-        vector_store = vector_store = MilvusVectorStore(uri="http://localhost:19530", dim=1536, overwrite=True)
+        vector_store = MilvusVectorStore(uri="http://your_gpu_ip:19530", dim=1536, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         query_engine = index.as_query_engine()
@@ -137,7 +137,7 @@ def add_to_rag(season, ingredients, restrictions):
             return f"No new data here." 
     
     try:
-        vector_store = MilvusVectorStore(uri="http://localhost:19530", dim=1536, overwrite=True)
+        vector_store = MilvusVectorStore(uri="http://your_gpu_ip:19530", dim=1536, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         query_engine = index.as_query_engine()

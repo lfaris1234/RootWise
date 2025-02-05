@@ -5,19 +5,14 @@ services:
     image: nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest
     container_name: nv_embedqa_container
     restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    platform: linux/amd64  # Force x86_64 emulation on ARM Mac
     environment:
       - NGC_API_KEY=${NGC_API_KEY}  # Ensure your .env file contains NGC_API_KEY
     ports:
-      - "8000:8000"  # Expose the container service on port 8000
+      - "800:8000"  # Expose the container service on port 8000
     volumes:
       - "${LOCAL_NIM_CACHE}:/opt/nim/.cache"  # Ensure LOCAL_NIM_CACHE is set
     shm_size: "16gb"  # Match the shared memory size from the standalone command
-    user: "${UID:-1000}"  # Ensure the correct user ID is used
+    user: "1000"  # Fix the UID issue
     command: ["bash", "-c", "sleep infinity"]  # Keep the container running
+
