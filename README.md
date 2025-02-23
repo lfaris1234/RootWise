@@ -1,5 +1,67 @@
 # RootWise: Sustainable Farming & Cooking App
 
+
+## Setup Instructions
+
+1. Create and activate a virtual environment:
+```
+python3 -m venv your_env 
+source your_env/bin/activate 
+```
+2. Install required dependencies:
+```
+pip install -r requirements.txt
+```
+3. Set up environment variables:
+```
+export NGC_API_KEY="{your api key}"
+export NVIDIA_API_KEY="{your api key}"
+```
+4. Setup GPU (specific to personal dev with brev gpu, retrieve token from startup page):
+```
+brew install brevdev/homebrew-brev/brev && brev login --token ***
+brev shell rootwise-t4-jupyter
+```
+5. Pull and run nvidia/nv-embedqa-e5-v5 using Docker (this will download the full model and run it in your local environment):
+```
+docker login nvcr.io
+    Username: $oauthtoken
+    Password: <API_KEY>
+```
+6. Pull and run the NVIDIA NIM with the command below. This will download the optimized model for your infrastructure.
+```
+export NGC_API_KEY=<API_KEY>
+export LOCAL_NIM_CACHE=~/.cache/nim
+mkdir -p "$LOCAL_NIM_CACHE"
+docker run -it --rm \
+    --gpus all \
+    --shm-size=16GB \
+    -e NGC_API_KEY \
+    -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
+    -u $(id -u) \
+    -p 8000:8000 \
+    nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest
+
+```
+7. Open a new terminal and rerun for CLI
+```
+brev shell rootwise-t4-jupyter
+```
+8. Verify running containers
+```
+docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+```
+9. Launch the webapp (make sure that all files in the gpu deployment are up-to-date *I've been using the jupyter notebook*)
+```
+python3 app.py
+```
+
+
+To stop the application:
+```
+docker compose down
+```
+
 ## Concept
 
 This application promotes sustainable farming and cooking by providing users with personalized recipes, food storage strategies, and community-driven tips based on seasonal and local ingredients. It also integrates computer vision to identify vegetables from farm stand photos, emphasizing zero-waste cooking and supporting local farms.
@@ -32,53 +94,3 @@ This application promotes sustainable farming and cooking by providing users wit
        - Health benefits (e.g., turmeric for inflammation).
        - Spiritual properties (e.g., calming effects of certain herbs).
 ---
-
-## Setup Instructions
-
-1. Clone the repository and navigate to the project directory:
-```bash
-cd RAG/examples/basic_rag/llamaindex/
-```
-2. Create and activate a virtual environment:
-```
-python3 -m venv your_env 
-source your_env/bin/activate 
-```
-3. Install required dependencies:
-```
-pip install -r requirements.txt
-```
-4. Set up environment variables:
-```
-export NGC_API_KEY="{your api key}"
-export NVIDIA_API_KEY="{your api key}"
-```
-5. Pull and run nvidia/nv-embedqa-e5-v5 using Docker (this will download the full model and run it in your local environment):
-```
-docker login nvcr.io
-    Username: $oauthtoken
-    Password: <API_KEY>
-```
-6. Pull and run the NVIDIA NIM with the command below. This will download the optimized model for your infrastructure.
-```
-export NGC_API_KEY=<API_KEY>
-export LOCAL_NIM_CACHE=~/.cache/nim
-mkdir -p "$LOCAL_NIM_CACHE"
-docker run -it --rm \
-    --gpus all \
-    --shm-size=16GB \
-    -e NGC_API_KEY \
-    -v "$LOCAL_NIM_CACHE:/opt/nim/.cache" \
-    -u $(id -u) \
-    -p 8000:8000 \
-    nvcr.io/nim/nvidia/nv-embedqa-e5-v5:latest
-
-```
-7. Verify running containers
-```
-docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
-```
-8. To stop the application:
-```
-docker compose down
-```
