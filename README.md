@@ -11,6 +11,7 @@ source your_env/bin/activate
 2. Install required dependencies:
 ```
 pip install -r requirements.txt
+brew install brevdev/homebrew-brev/brev && brev login --token *** (specifc to Brev GPU)
 ```
 3. Set up environment variables:
 ```
